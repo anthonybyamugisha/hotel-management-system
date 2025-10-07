@@ -1,0 +1,40 @@
+{% extends 'reports/base.html' %}
+
+{% block title %}Monthly Revenue Collection Report{% endblock %}
+
+{% block content %}
+<div class="report-header">
+    <h1 class="report-title">💰 Monthly Revenue Collection Report</h1>
+</div>
+
+{% if error %}
+    <div class="error-message">
+        <strong>Error:</strong> {{ error }}
+    </div>
+{% elif data %}
+    <div style="overflow-x: auto;">
+        <table class="report-table">
+            <thead>
+                <tr>
+                    {% for key, value in data.0.items %}
+                        <th>{{ key }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                    <tr>
+                        {% for key, value in row.items %}
+                            <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="no-data">
+        <p>No data available for this report.</p>
+    </div>
+{% endif %}
+{% endblock %}
