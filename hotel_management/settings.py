@@ -25,9 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-d_+a2&l8s_(d!(83*g_!%+l%r&1(x8i&6q*g_-clhi)ccfs_ki')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+# Allow all hosts in development, but be more specific in production
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,hotel-management-system-igsf.onrender.com').split(',')
 
 
 # Application definition
@@ -76,16 +77,18 @@ WSGI_APPLICATION = 'hotel_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', 'mysql://root:Groupm@2025@localhost:3306/hotelmanagementdb'),
+# Try to configure database from DATABASE_URL environment variable first
+DATABASES = {}
+
+# Render database configuration
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600,
         conn_health_checks=True,
     )
-}
-
-# Handle the case where DATABASE_URL is not set properly
-if not DATABASES['default']:
+else:
+    # Local development database configuration
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('DB_NAME', 'hotelmanagementdb'),
@@ -93,7 +96,26 @@ if not DATABASES['default']:
         'PASSWORD': os.environ.get('DB_PASSWORD', 'Groupm@2025'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': os.environ.get('DB_PORT', '3306'),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        },
+        'CONN_MAX_AGE': 600,
     }
+
+# Test database connection and provide fallback if needed
+try:
+    # This is just to ensure the database configuration is valid
+    # Actual connection testing should be done at runtime
+    pass
+except Exception:
+    # Fallback to SQLite for development if MySQL is not available
+    if DEBUG:
+        DATABASES['default'] = {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

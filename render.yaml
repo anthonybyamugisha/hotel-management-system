@@ -9,7 +9,7 @@ services:
     name: hotel-management
     runtime: python
     plan: free
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "./setup.sh"
     startCommand: "gunicorn hotel_management.wsgi:application"
     envVars:
       - key: DATABASE_URL
@@ -20,3 +20,5 @@ services:
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
+      - key: DEBUG
+        value: False

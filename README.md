@@ -1,125 +1,141 @@
 # Hotel Management System
 
-A Django web application for hotel management with reporting and analytics capabilities.
+A Django-based hotel management system with reporting and dashboard capabilities.
 
-## Features
-- Traditional reports (text-based)
-- Graphical dashboard with interactive charts
-- Real-time data visualization
-- Multiple report types:
-  - General hotel overview
-  - Room occupancy analysis
-  - Staff performance metrics
-  - Revenue tracking
-  - Outstanding payments
-  - Top paying guests
+## Local Development Setup
 
-## Quick Start
-
-### Windows Users
-1. Double-click `setup.bat` to set up the project (first time only)
-2. Double-click `run_dev.bat` to start the development server
-
-### PowerShell Users
-1. Run `.\setup.ps1` to set up the project (first time only)
-2. Run `.\run_dev.ps1` to start the development server
-
-### Linux/Mac Users
-1. Run `make setup` to set up the project (first time only)
-2. Run `make run` to start the development server
+1. Install Python 3.8+
+2. Create a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Set up the database (MySQL):
+   - Create a MySQL database named `hotelmanagementdb`
+   - Update credentials in `hotel_management/settings.py` if needed
+5. Run migrations:
+   ```bash
+   python manage.py migrate
+   ```
+6. Start the development server:
+   ```bash
+   python manage.py runserver
+   ```
 
 ## Deployment to Render
 
-### Prerequisites
-1. A Render account (https://render.com)
-2. A MySQL database (can be provisioned on Render or use an external one)
+### Automatic Deployment
+Render will automatically:
+1. Install dependencies from `requirements.txt`
+2. Run the build command: `./setup.sh`
+3. Start the application with: `gunicorn hotel_management.wsgi:application`
 
-### Steps to Deploy
+### Manual Deployment Steps
+1. Push your code to GitHub
+2. Connect your repository to Render
+3. Configure the service using `render.yaml`
+4. Set environment variables in Render dashboard:
+   - `SECRET_KEY` (auto-generated)
+   - `DEBUG=False`
+   - `ALLOWED_HOSTS` (comma-separated list including your Render domain)
 
-1. **Fork this repository** to your GitHub account
+### Troubleshooting Deployment Issues
 
-2. **Create a new Web Service on Render**
-   - Go to your Render Dashboard
-   - Click "New" and select "Web Service"
-   - Connect your GitHub repository
-   - Set the following:
-     - Name: hotel-management
-     - Runtime: Python 3
-     - Build Command: `pip install -r requirements.txt`
-     - Start Command: `gunicorn hotel_management.wsgi:application`
-     - Plan: Free (or choose a paid plan for production)
+If your application isn't working after deployment, check:
 
-3. **Configure Environment Variables**
-   Add the following environment variables in the Render dashboard:
-   - `SECRET_KEY`: A random secret key for Django
-   - `DEBUG`: False (for production)
-   - `ALLOWED_HOSTS`: Your Render URL (e.g., hotel-management.onrender.com)
-   - `DATABASE_URL`: Your MySQL database connection string
+1. **Render Logs**: Check the build and runtime logs for error messages
+2. **Environment Variables**: Ensure all required variables are set
+3. **Database Connection**: Verify the database is properly linked
+4. **Static Files**: Make sure `collectstatic` runs during build
 
-4. **Set up Database**
-   Option A: Use Render's database service
-   - Create a new database on Render
-   - Update the DATABASE_URL environment variable with the connection string provided by Render
+### Diagnostic URLs
+- Test deployment: `/reports/test/`
+- Main dashboard: `/reports/dashboard/`
+- Reports index: `/reports/reports/`
 
-   Option B: Use an external MySQL database
-   - Ensure your database is accessible from Render
-   - Update the DATABASE_URL environment variable with your database connection string
+### Common Issues and Solutions
 
-5. **Deploy**
-   - Click "Create Web Service"
-   - Render will automatically deploy your application
-   - The deployment process will:
-     - Install dependencies from requirements.txt
-     - Run Django migrations
-     - Start the Gunicorn server
+#### Database Connection Errors
+- Ensure your database service is running
+- Check that `DATABASE_URL` is correctly set
+- Verify database credentials and permissions
 
-### Local Development Setup
+#### Static Files Not Loading
+- Confirm `collectstatic` runs during build
+- Check `STATIC_ROOT` and `STATIC_URL` settings
+- Verify WhiteNoise is properly configured
 
-1. Clone the repository:
-   ```
-   git clone <your-repo-url>
-   cd hotel-management
-   ```
-
-2. Run the setup script:
-   - Windows: Double-click `setup.bat`
-   - PowerShell: Run `.\setup.ps1`
-   - Linux/Mac: Run `make setup`
-   - Manual setup:
-     ```
-     python -m venv venv
-     venv\Scripts\activate  # On Windows: venv\Scripts\activate
-     pip install -r requirements.txt
-     ```
-
-3. Set up environment variables:
-   - Copy `.env.example` to `.env` and update values as needed
-
-4. Run migrations:
-   ```
-   python manage.py migrate
-   ```
-
-5. Start the development server:
-   - Windows: Double-click `run_dev.bat`
-   - PowerShell: Run `.\run_dev.ps1`
-   - Linux/Mac: Run `make run`
-   - Manual: `python manage.py runserver`
+#### Application Not Starting
+- Check the start command: `gunicorn hotel_management.wsgi:application`
+- Ensure all dependencies are in `requirements.txt`
+- Verify the WSGI application path is correct
 
 ## Project Structure
-- `hotel_management/`: Main Django project settings
-- `reports/`: Main application with views, templates, and SQL reports
-- `static/`: CSS and JavaScript files
-- `templates/`: HTML templates
+```
+hotel_management/
+├── hotel_management/          # Main Django project
+│   ├── settings.py           # Configuration
+│   ├── urls.py              # Main URL routing
+│   └── wsgi.py              # WSGI entry point
+├── reports/                  # Reports app
+│   ├── sql/                 # SQL query files
+│   ├── templates/           # HTML templates
+│   ├── views.py             # View functions
+│   └── urls.py              # App URL routing
+├── static/                   # Static files
+│   ├── css/
+│   ├── js/
+│   └── images/
+├── manage.py                # Django management script
+├── requirements.txt         # Python dependencies
+├── Procfile                 # Render start command
+├── render.yaml              # Render service configuration
+└── setup.sh                 # Build script
+```
 
-## Database
-The application uses MySQL. Make sure to run the SQL scripts in the `reports/sql/` directory to set up your database schema and initial data.
+## Development Commands
 
-## Customization
-- Add new reports by creating SQL files in `reports/sql/`
-- Modify templates in `reports/templates/reports/`
-- Update views in `reports/views.py`
-- Add new styling in `static/css/styles.css`
+### Windows
+```bash
+# Setup (first time)
+setup.bat
 
-## License
-This project is licensed under the MIT License.
+# Run development server
+run_dev.bat
+```
+
+### Linux/Mac
+```bash
+# Setup (first time)
+make setup
+
+# Run development server
+make run
+```
+
+## Reports Available
+
+1. General Report - Overview of hotels, staff, and guests
+2. Room Occupancy Report - Room status and occupancy information
+3. Staff Performance Report - Employee performance metrics
+4. Monthly Revenue Collection - Revenue tracking
+5. Outstanding Payments - Guest payment status
+6. Top Paying Guests - High-value customers
+
+## Dashboard Charts
+
+1. Monthly Revenue Trend
+2. Hotel Occupancy Rates
+3. Room Type Distribution
+4. Staff Performance
+
+## Support
+
+For deployment issues, check:
+1. Render logs for specific error messages
+2. [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) for detailed troubleshooting steps
+3. Render documentation: https://render.com/docs
