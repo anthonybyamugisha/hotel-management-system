@@ -2,14 +2,14 @@
 {% load static %}
 <html>
 <head>
-    <title>Hotel Management Reports</title>
+    <title>Hotel Management Dashboard</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
-        <h1>🏨 Hotel Management Reports</h1>
+        <h1>🏨 Hotel Management Dashboard</h1>
     </header>
     
     <div class="container">
@@ -17,51 +17,6 @@
             Access detailed reports and analytics to make informed business decisions. 
             All reports are generated in real-time from our database.
         </p>
-        
-        <div class="report-grid">
-            <div class="report-card">
-                <h2 class="report-title">General Report</h2>
-                <p class="report-description">Overview of all hotel operations, staff, guests, and bookings.</p>
-                <a href="{% url 'reports:general_report' %}" class="btn">View Report</a>
-            </div>
-            
-            <div class="report-card">
-                <h2 class="report-title">Room Occupancy</h2>
-                <p class="report-description">Detailed analysis of room utilization and occupancy rates.</p>
-                <a href="{% url 'reports:room_occupancy_report' %}" class="btn">View Report</a>
-            </div>
-            
-            <div class="report-card">
-                <h2 class="report-title">Staff Performance</h2>
-                <p class="report-description">Evaluate staff productivity and performance metrics.</p>
-                <a href="{% url 'reports:staff_performance' %}" class="btn">View Report</a>
-            </div>
-            
-            <div class="report-card">
-                <h2 class="report-title">Revenue Collection</h2>
-                <p class="report-description">Monthly financial performance and revenue tracking.</p>
-                <a href="{% url 'reports:monthly_revenue_collection' %}" class="btn">View Report</a>
-            </div>
-            
-            <div class="report-card">
-                <h2 class="report-title">Outstanding Payments</h2>
-                <p class="report-description">Track unpaid invoices and outstanding guest balances.</p>
-                <a href="{% url 'reports:outstanding_payments_per_guest' %}" class="btn">View Report</a>
-            </div>
-            
-            <div class="report-card">
-                <h2 class="report-title">Top Paying Guests</h2>
-                <p class="report-description">Identify and analyze our most valuable customers.</p>
-                <a href="{% url 'reports:top_paying_guests' %}" class="btn">View Report</a>
-            </div>
-            
-            <!-- Dashboard Card -->
-            <div class="report-card">
-                <h2 class="report-title">📊 Analytics Dashboard</h2>
-                <p class="report-description">Interactive charts and visualizations for key hotel metrics.</p>
-                <a href="{% url 'reports:dashboard' %}" class="btn btn-accent">View Dashboard</a>
-            </div>
-        </div>
         
         <!-- Dashboard with Charts -->
         <div class="dashboard">
@@ -76,9 +31,12 @@
                 <canvas id="roomTypeChart" width="400" height="200"></canvas>
             </div>
         </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="{% url 'reports:reports_index' %}" class="btn">📋 View Traditional Reports</a>
+        </div>
     </div>
     
-    <script src="{% static 'js/main.js' %}"></script>
     <script>
         // Sample data for charts (in a real application, this would come from your backend)
         document.addEventListener('DOMContentLoaded', function() {
