@@ -12,11 +12,12 @@ def check_template_styling(template_path):
         with open(template_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Check if it has either inline styles or links to CSS
+        # Check if it has either inline styles, links to CSS, or extends a base template
         has_inline_styles = '<style>' in content
         has_css_link = 'href="{% static \'css/styles.css' in content or 'href="/static/css/styles.css' in content
+        extends_base = '{% extends' in content and 'base.html' in content
         
-        if has_inline_styles or has_css_link:
+        if has_inline_styles or has_css_link or extends_base:
             print(f"✓ {template_path.name} has styling")
             return True
         else:
