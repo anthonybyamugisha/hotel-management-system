@@ -14,6 +14,20 @@ A Django web application for hotel management with reporting and analytics capab
   - Outstanding payments
   - Top paying guests
 
+## Quick Start
+
+### Windows Users
+1. Double-click `setup.bat` to set up the project (first time only)
+2. Double-click `run_dev.bat` to start the development server
+
+### PowerShell Users
+1. Run `.\setup.ps1` to set up the project (first time only)
+2. Run `.\run_dev.ps1` to start the development server
+
+### Linux/Mac Users
+1. Run `make setup` to set up the project (first time only)
+2. Run `make run` to start the development server
+
 ## Deployment to Render
 
 ### Prerequisites
@@ -67,29 +81,30 @@ A Django web application for hotel management with reporting and analytics capab
    cd hotel-management
    ```
 
-2. Create a virtual environment:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+2. Run the setup script:
+   - Windows: Double-click `setup.bat`
+   - PowerShell: Run `.\setup.ps1`
+   - Linux/Mac: Run `make setup`
+   - Manual setup:
+     ```
+     python -m venv venv
+     venv\Scripts\activate  # On Windows: venv\Scripts\activate
+     pip install -r requirements.txt
+     ```
 
-3. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-
-4. Set up environment variables:
+3. Set up environment variables:
    - Copy `.env.example` to `.env` and update values as needed
 
-5. Run migrations:
+4. Run migrations:
    ```
    python manage.py migrate
    ```
 
-6. Start the development server:
-   ```
-   python manage.py runserver
-   ```
+5. Start the development server:
+   - Windows: Double-click `run_dev.bat`
+   - PowerShell: Run `.\run_dev.ps1`
+   - Linux/Mac: Run `make run`
+   - Manual: `python manage.py runserver`
 
 ## Project Structure
 - `hotel_management/`: Main Django project settings
