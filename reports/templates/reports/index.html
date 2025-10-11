@@ -2,137 +2,137 @@
 {% load static %}
 <html>
 <head>
-    <title>Hotel Management Dashboard</title>
+    <title>Hotel Management System</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .home-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .welcome-header {
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #3498db;
+        }
+        
+        .welcome-header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #7f8c8d;
+        }
+        
+        .buttons-container {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .home-btn {
+            display: inline-block;
+            padding: 1.5rem 2.5rem;
+            background: #f8f9fa;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 15px;
+            margin: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid #3498db;
+            min-width: 250px;
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.1);
+        }
+        
+        .home-btn:hover {
+            background: #e3f2fd;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(52, 152, 219, 0.2);
+        }
+        
+        .home-btn h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.8rem;
+            color: #3498db;
+        }
+        
+        .home-btn p {
+            margin: 0;
+            font-size: 1rem;
+            color: #7f8c8d;
+        }
+        
+        .btn-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: #3498db;
+        }
+        
+        @media (max-width: 768px) {
+            .home-container {
+                padding: 1rem;
+            }
+            
+            .welcome-header h1 {
+                font-size: 2rem;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .home-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>🏨 Hotel Management Dashboard</h1>
-    </header>
-    
-    <div class="container">
-        <p class="description">
-            Access detailed reports and analytics to make informed business decisions. 
-            All reports are generated in real-time from our database.
-        </p>
-        
-        <!-- Dashboard with Charts -->
-        <div class="dashboard">
-            <h2>📊 Analytics Dashboard</h2>
-            <div class="chart-container">
-                <canvas id="revenueChart" width="400" height="200"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="occupancyChart" width="400" height="200"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="roomTypeChart" width="400" height="200"></canvas>
-            </div>
+    <div class="home-container">
+        <div class="welcome-header">
+            <h1>🏨 Hotel Management System</h1>
+            <p>Welcome to your comprehensive hotel management solution. Access detailed reports and analytics to make informed business decisions.</p>
         </div>
         
-        <div style="text-align: center; margin-top: 40px;">
-            <a href="{% url 'reports:reports_index' %}" class="btn">📋 View Traditional Reports</a>
+        <div class="buttons-container">
+            <a href="{% url 'reports:reports_index' %}" class="home-btn">
+                <span class="btn-icon">📋</span>
+                <h2>Traditional Reports</h2>
+                <p>View detailed textual reports and data tables</p>
+            </a>
+            
+            <a href="{% url 'reports:dashboard' %}" class="home-btn">
+                <span class="btn-icon">📊</span>
+                <h2>Graphical Reports</h2>
+                <p>Visualize data with interactive charts and graphs</p>
+            </a>
         </div>
     </div>
-    
-    <script>
-        // Sample data for charts (in a real application, this would come from your backend)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Revenue Chart (Line Chart)
-            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-            const revenueChart = new Chart(revenueCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Revenue ($)',
-                        data: [12000, 19000, 15000, 18000, 22000, 25000],
-                        borderColor: 'rgb(75, 192, 192)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Monthly Revenue Trend'
-                        }
-                    }
-                }
-            });
-            
-            // Occupancy Chart (Bar Chart)
-            const occupancyCtx = document.getElementById('occupancyChart').getContext('2d');
-            const occupancyChart = new Chart(occupancyCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Hotel A', 'Hotel B', 'Hotel C'],
-                    datasets: [{
-                        label: 'Occupancy Rate (%)',
-                        data: [75, 82, 68],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 205, 86, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgb(255, 99, 132)',
-                            'rgb(54, 162, 235)',
-                            'rgb(255, 205, 86)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Hotel Occupancy Rates'
-                        }
-                    }
-                }
-            });
-            
-            // Room Types Chart (Pie Chart)
-            const roomTypeCtx = document.getElementById('roomTypeChart').getContext('2d');
-            const roomTypeChart = new Chart(roomTypeCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Single', 'Double', 'Suite', 'Deluxe'],
-                    datasets: [{
-                        label: 'Room Types',
-                        data: [30, 45, 15, 10],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 205, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgb(255, 99, 132)',
-                            'rgb(54, 162, 235)',
-                            'rgb(255, 205, 86)',
-                            'rgb(75, 192, 192)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Room Type Distribution'
-                        }
-                    }
-                }
-            });
-        });
-    </script>
 </body>
 </html>

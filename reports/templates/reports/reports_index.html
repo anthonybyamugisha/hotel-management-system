@@ -8,6 +8,10 @@
 <body>
     <header>
         <h1>🏨 Hotel Management Reports</h1>
+        <p style="text-align: center; margin-top: 10px;">
+            <a href="{% url 'reports:index' %}" class="btn">🏠 Home</a>
+            <a href="{% url 'reports:dashboard' %}" class="btn">📊 View Analytics Dashboard</a>
+        </p>
     </header>
     
     <div class="container">
@@ -52,10 +56,6 @@
                 <p class="report-description">Identify and analyze our most valuable customers.</p>
                 <a href="{% url 'reports:top_paying_guests' %}" class="btn">View Report</a>
             </div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 40px;">
-            <a href="{% url 'reports:dashboard' %}" class="btn btn-accent">📊 View Analytics Dashboard</a>
         </div>
     </div>
 </body>

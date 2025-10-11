@@ -34,7 +34,7 @@ def execute_sql(file_name):
 
 # Create your views here.
 def index(request):
-    return render(request, 'reports/dashboard.html')
+    return render(request, 'reports/index.html')
 
 
 def reports_index(request):
@@ -65,14 +65,6 @@ def chart_data(request):
         'room_types': {
             'types': ['Single', 'Double', 'Suite', 'Deluxe', 'Presidential'],
             'counts': [30, 45, 15, 8, 2]
-        },
-        'satisfaction': {
-            'categories': ['Check-in', 'Room Quality', 'Staff Service', 'Amenities', 'Cleanliness', 'Value'],
-            'scores': [8.5, 9.2, 7.8, 8.8, 9.5, 8.1]
-        },
-        'service_revenue': {
-            'services': ['Restaurant', 'Spa', 'Concierge', 'Parking', 'WiFi', 'Laundry'],
-            'revenue': [15000, 8000, 5000, 3000, 2000, 1500]
         }
     }
     

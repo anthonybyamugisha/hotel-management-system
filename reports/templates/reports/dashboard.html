@@ -54,6 +54,7 @@
     <header>
         <h1>🏨 Hotel Management Dashboard</h1>
         <p style="text-align: center; margin-top: 10px;">
+            <a href="{% url 'reports:index' %}" class="btn">🏠 Home</a>
             <a href="{% url 'reports:reports_index' %}" class="btn">📋 View Traditional Reports</a>
         </p>
     </header>
@@ -93,28 +94,12 @@
                     <canvas id="staffChart"></canvas>
                 </div>
             </div>
-            
-            <!-- Guest Satisfaction Chart -->
-            <div class="chart-card">
-                <h3>Guest Satisfaction Ratings</h3>
-                <div class="chart-wrapper">
-                    <canvas id="satisfactionChart"></canvas>
-                </div>
-            </div>
-            
-            <!-- Revenue by Service Type -->
-            <div class="chart-card">
-                <h3>Revenue by Service Type</h3>
-                <div class="chart-wrapper">
-                    <canvas id="serviceRevenueChart"></canvas>
-                </div>
-            </div>
         </div>
     </div>
     
     <script>
         // Global variables for charts
-        let revenueChart, occupancyChart, roomTypeChart, staffChart, satisfactionChart, serviceRevenueChart;
+        let revenueChart, occupancyChart, roomTypeChart, staffChart;
         
         // Function to initialize charts with empty data
         function initCharts() {
@@ -259,91 +244,12 @@
                     }
                 }
             });
-            
-            // New Guest Satisfaction Chart (Radar Chart)
-            const satisfactionCtx = document.getElementById('satisfactionChart').getContext('2d');
-            satisfactionChart = new Chart(satisfactionCtx, {
-                type: 'radar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Satisfaction Score',
-                        data: [],
-                        fill: true,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        pointBackgroundColor: 'rgb(255, 99, 132)',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgb(255, 99, 132)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Guest Satisfaction Ratings'
-                        }
-                    },
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            max: 10
-                        }
-                    }
-                }
-            });
-            
-            // New Service Revenue Chart (Doughnut Chart)
-            const serviceRevenueCtx = document.getElementById('serviceRevenueChart').getContext('2d');
-            serviceRevenueChart = new Chart(serviceRevenueCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Service Revenue',
-                        data: [],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.6)',
-                            'rgba(54, 162, 235, 0.6)',
-                            'rgba(255, 205, 86, 0.6)',
-                            'rgba(75, 192, 192, 0.6)',
-                            'rgba(153, 102, 255, 0.6)',
-                            'rgba(255, 159, 64, 0.6)'
-                        ],
-                        borderColor: [
-                            'rgb(255, 99, 132)',
-                            'rgb(54, 162, 235)',
-                            'rgb(255, 205, 86)',
-                            'rgb(75, 192, 192)',
-                            'rgb(153, 102, 255)',
-                            'rgb(255, 159, 64)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Revenue by Service Type'
-                        },
-                        legend: {
-                            position: 'right',
-                        }
-                    }
-                }
-            });
         }
         
         // Function to update charts with real data
         function updateCharts(chartData) {
             // Update revenue chart
-            if (chartData.revenue) {
+            if (chartData.revenue && chartData.revenue.labels && chartData.revenue.labels.length > 0) {
                 revenueChart.data.labels = chartData.revenue.labels;
                 revenueChart.data.datasets[0].data = chartData.revenue.room_revenue;
                 revenueChart.data.datasets[1].data = chartData.revenue.service_revenue;
@@ -351,38 +257,24 @@
             }
             
             // Update occupancy chart
-            if (chartData.occupancy) {
+            if (chartData.occupancy && chartData.occupancy.hotels && chartData.occupancy.hotels.length > 0) {
                 occupancyChart.data.labels = chartData.occupancy.hotels;
                 occupancyChart.data.datasets[0].data = chartData.occupancy.rates;
                 occupancyChart.update();
             }
             
             // Update room type chart
-            if (chartData.room_types) {
+            if (chartData.room_types && chartData.room_types.types && chartData.room_types.types.length > 0) {
                 roomTypeChart.data.labels = chartData.room_types.types;
                 roomTypeChart.data.datasets[0].data = chartData.room_types.counts;
                 roomTypeChart.update();
             }
             
             // Update staff chart
-            if (chartData.staff) {
+            if (chartData.staff && chartData.staff.departments && chartData.staff.departments.length > 0) {
                 staffChart.data.labels = chartData.staff.departments;
                 staffChart.data.datasets[0].data = chartData.staff.scores;
                 staffChart.update();
-            }
-            
-            // Update satisfaction chart
-            if (chartData.satisfaction) {
-                satisfactionChart.data.labels = chartData.satisfaction.categories;
-                satisfactionChart.data.datasets[0].data = chartData.satisfaction.scores;
-                satisfactionChart.update();
-            }
-            
-            // Update service revenue chart
-            if (chartData.service_revenue) {
-                serviceRevenueChart.data.labels = chartData.service_revenue.services;
-                serviceRevenueChart.data.datasets[0].data = chartData.service_revenue.revenue;
-                serviceRevenueChart.update();
             }
         }
         
@@ -399,40 +291,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching chart data:', error);
-                    // Use sample data if fetch fails
-                    updateCharts(getSampleData());
                 });
-        }
-        
-        // Function to provide sample data
-        function getSampleData() {
-            return {
-                revenue: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    room_revenue: [12000, 19000, 15000, 18000, 22000, 25000],
-                    service_revenue: [5000, 7000, 6000, 8000, 9000, 10000]
-                },
-                occupancy: {
-                    hotels: ['Grand Plaza', 'Seaside Resort', 'City Center Inn', 'Mountain View Hotel'],
-                    rates: [75, 82, 68, 79]
-                },
-                room_types: {
-                    types: ['Single', 'Double', 'Suite', 'Deluxe', 'Presidential'],
-                    counts: [30, 45, 15, 8, 2]
-                },
-                staff: {
-                    departments: ['Reception', 'Housekeeping', 'Food Service', 'Maintenance', 'Management'],
-                    scores: [85, 92, 78, 88, 95]
-                },
-                satisfaction: {
-                    categories: ['Check-in', 'Room Quality', 'Staff Service', 'Amenities', 'Cleanliness', 'Value'],
-                    scores: [8.5, 9.2, 7.8, 8.8, 9.5, 8.1]
-                },
-                service_revenue: {
-                    services: ['Restaurant', 'Spa', 'Concierge', 'Parking', 'WiFi', 'Laundry'],
-                    revenue: [15000, 8000, 5000, 3000, 2000, 1500]
-                }
-            };
         }
         
         // Initialize charts when the page loads
