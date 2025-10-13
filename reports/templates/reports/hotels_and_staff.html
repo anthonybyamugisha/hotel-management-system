@@ -1,0 +1,152 @@
+{% extends 'reports/base.html' %}
+
+{% block title %}Hotels and Staff Report{% endblock %}
+
+{% block content %}
+<div class="report-header">
+    <h1 class="report-title">🏨 Hotels and Staff Report</h1>
+    <p class="report-description">Detailed information about hotels and their assigned staff members</p>
+</div>
+
+{% if error %}
+    <div class="error-message">
+        <strong>Error:</strong> {{ error }}
+    </div>
+{% elif data %}
+    <div class="hotel-section">
+        {% for hotel in hotels %}
+        <div class="hotel-card">
+            <div class="hotel-header">
+                <h2>{{ hotel.hotel_name }}</h2>
+                <div class="hotel-details">
+                    <p><strong>ID:</strong> {{ hotel.hotel_id }}</p>
+                    <p><strong>Location:</strong> {{ hotel.location }}</p>
+                    <p><strong>Contact:</strong> {{ hotel.hotel_contact }}</p>
+                </div>
+            </div>
+            
+            <div class="staff-section">
+                <h3>👥 Staff Members</h3>
+                {% if hotel.staff_members %}
+                <div class="staff-grid">
+                    {% for staff in hotel.staff_members %}
+                    <div class="staff-card">
+                        <div class="staff-name">{{ staff.staff_name }}</div>
+                        <div class="staff-role">{{ staff.staff_role }}</div>
+                        <div class="staff-contact">{{ staff.staff_contact }}</div>
+                        <div class="staff-id">ID: {{ staff.staff_id }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="no-staff">No staff members assigned to this hotel.</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="no-data">
+        <p>No data available for this report.</p>
+    </div>
+{% endif %}
+
+<style>
+.hotel-section {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.hotel-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.hotel-header h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.hotel-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.hotel-details p {
+    margin: 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.staff-section h3 {
+    color: #2c3e50;
+    margin: 20px 0 15px 0;
+}
+
+.staff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.staff-card {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
+    border-left: 4px solid #3498db;
+}
+
+.staff-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.staff-role {
+    color: #3498db;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.staff-contact {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    margin-bottom: 5px;
+}
+
+.staff-id {
+    font-size: 0.8em;
+    color: #95a5a6;
+}
+
+.no-staff {
+    font-style: italic;
+    color: #7f8c8d;
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .hotel-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .staff-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

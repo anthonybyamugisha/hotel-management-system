@@ -99,6 +99,12 @@
         
         <div class="report-grid">
             <div class="report-card">
+                <h2 class="report-title">Hotels and Staff</h2>
+                <p class="report-description">Detailed information about hotels and their assigned staff members.</p>
+                <a href="{% url 'reports:hotels_and_staff' %}" class="btn">View Report</a>
+            </div>
+            
+            <div class="report-card">
                 <h2 class="report-title">General Report</h2>
                 <p class="report-description">Overview of all hotel operations, staff, guests, and bookings.</p>
                 <a href="{% url 'reports:general_report' %}" class="btn">View Report</a>
@@ -132,6 +138,12 @@
                 <h2 class="report-title">Top Paying Guests</h2>
                 <p class="report-description">Identify and analyze our most valuable customers.</p>
                 <a href="{% url 'reports:top_paying_guests' %}" class="btn">View Report</a>
+            </div>
+            
+            <div class="report-card">
+                <h2 class="report-title">Room Management</h2>
+                <p class="report-description">Manage hotel rooms, track availability, and monitor room status.</p>
+                <a href="{% url 'reports:room_management' %}" class="btn">View Room Management</a>
             </div>
         </div>
     </div>

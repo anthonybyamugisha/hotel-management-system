@@ -297,3 +297,214 @@ def test_database_connection(request):
         }
     
     return JsonResponse(context)
+
+def hotels_and_staff(request):
+    try:
+        data = execute_sql('hotels_and_staff.sql')
+        
+        # Process data to group staff by hotel
+        hotels = []
+        current_hotel = None
+        current_hotel_data = None
+        
+        for row in data:
+            # Check if this is a new hotel
+            if current_hotel != row['hotel_id']:
+                # If we were processing a hotel, add it to the list
+                if current_hotel_data:
+                    hotels.append(current_hotel_data)
+                
+                # Start a new hotel
+                current_hotel = row['hotel_id']
+                current_hotel_data = {
+                    'hotel_id': row['hotel_id'],
+                    'hotel_name': row['hotel_name'],
+                    'location': row['location'],
+                    'hotel_contact': row['hotel_contact'],
+                    'staff_members': []
+                }
+            
+            # Add staff member if exists
+            if row['staff_id'] is not None and current_hotel_data is not None:
+                current_hotel_data['staff_members'].append({
+                    'staff_id': row['staff_id'],
+                    'staff_name': row['staff_name'],
+                    'staff_role': row['staff_role'],
+                    'staff_contact': row['staff_contact']
+                })
+        
+        # Don't forget the last hotel
+        if current_hotel_data:
+            hotels.append(current_hotel_data)
+        
+        context = {'hotels': hotels}
+    except Exception as e:
+        context = {'error': str(e)}
+    
+    return render(request, 'reports/hotels_and_staff.html', context)
+
+
+def room_management(request):
+    try:
+        # Get filter parameters from the request
+        hotel_id = request.GET.get('hotel_id', '')
+        room_status = request.GET.get('room_status', '')
+        room_type = request.GET.get('room_type', '')
+        
+        # Build dynamic SQL query based on filters
+        with connection.cursor() as cursor:
+            # All rooms query with filters
+            all_rooms_query = """
+                SELECT 
+                    r.room_id,
+                    r.room_type,
+                    r.room_status,
+                    h.hotel_name,
+                    h.hotel_id
+                FROM room r
+                JOIN hotel h ON r.hotel_id = h.hotel_id
+                WHERE 1=1
+            """
+            
+            params = []
+            if hotel_id:
+                all_rooms_query += " AND h.hotel_id = %s"
+                params.append(hotel_id)
+            if room_status:
+                all_rooms_query += " AND r.room_status = %s"
+                params.append(room_status)
+            if room_type:
+                all_rooms_query += " AND r.room_type = %s"
+                params.append(room_type)
+                
+            all_rooms_query += " ORDER BY h.hotel_name, r.room_id"
+            
+            cursor.execute(all_rooms_query, params)
+            columns = [col[0] for col in cursor.description]
+            all_rooms = [dict(zip(columns, row)) for row in cursor.fetchall()]
+            
+            # Room availability query (no filters needed for this view)
+            cursor.execute("""
+                SELECT 
+                    h.hotel_name,
+                    r.room_type,
+                    COUNT(r.room_id) AS total_rooms,
+                    SUM(CASE WHEN r.room_status = 'Available' THEN 1 ELSE 0 END) AS available_rooms,
+                    SUM(CASE WHEN r.room_status = 'Occupied' THEN 1 ELSE 0 END) AS occupied_rooms,
+                    SUM(CASE WHEN r.room_status = 'Booked' THEN 1 ELSE 0 END) AS booked_rooms,
+                    SUM(CASE WHEN r.room_status = 'Maintenance' THEN 1 ELSE 0 END) AS maintenance_rooms
+                FROM room r
+                JOIN hotel h ON r.hotel_id = h.hotel_id
+                GROUP BY h.hotel_name, r.room_type
+                ORDER BY h.hotel_name, r.room_type
+            """)
+            columns = [col[0] for col in cursor.description]
+            room_availability = [dict(zip(columns, row)) for row in cursor.fetchall()]
+            
+            # Room status details query with filters
+            status_query = """
+                SELECT 
+                    h.hotel_name,
+                    r.room_id,
+                    r.room_type,
+                    r.room_status,
+                    b.booking_id,
+                    CONCAT(g.first_name, ' ', g.last_name) AS guest_name,
+                    b.check_in_date,
+                    b.check_out_date
+                FROM room r
+                JOIN hotel h ON r.hotel_id = h.hotel_id
+                LEFT JOIN booking b ON r.room_id = b.room_id AND b.booking_status = 'Confirmed'
+                LEFT JOIN guest g ON b.guest_id = g.guest_id
+                WHERE 1=1
+            """
+            
+            status_params = []
+            if hotel_id:
+                status_query += " AND h.hotel_id = %s"
+                status_params.append(hotel_id)
+            if room_status:
+                status_query += " AND r.room_status = %s"
+                status_params.append(room_status)
+            if room_type:
+                status_query += " AND r.room_type = %s"
+                status_params.append(room_type)
+                
+            status_query += " ORDER BY h.hotel_name, r.room_id"
+            
+            cursor.execute(status_query, status_params)
+            columns = [col[0] for col in cursor.description]
+            room_status_data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+            
+            # Room utilization query (no filters needed for this view)
+            cursor.execute("""
+                SELECT
+                    h.hotel_name,
+                    COUNT(r.room_id) AS total_rooms,
+                    ROUND(
+                        (SUM(CASE WHEN r.room_status IN ('Occupied', 'Booked') THEN 1 ELSE 0 END) / COUNT(r.room_id)) * 100, 2
+                    ) AS utilization_rate_percent
+                FROM room r
+                JOIN hotel h ON r.hotel_id = h.hotel_id
+                GROUP BY h.hotel_name
+                ORDER BY utilization_rate_percent DESC
+            """)
+            columns = [col[0] for col in cursor.description]
+            room_utilization = [dict(zip(columns, row)) for row in cursor.fetchall()]
+            
+            # Hotels for filter dropdown (no filters needed for this view)
+            cursor.execute("""
+                SELECT DISTINCT h.hotel_id, h.hotel_name
+                FROM hotel h
+                JOIN room r ON h.hotel_id = r.hotel_id
+                ORDER BY h.hotel_name
+            """)
+            columns = [col[0] for col in cursor.description]
+            hotels = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        
+        context = {
+            'all_rooms': all_rooms,
+            'room_availability': room_availability,
+            'room_status': room_status_data,
+            'room_utilization': room_utilization,
+            'hotels': hotels,
+            'filter_hotel_id': hotel_id,
+            'filter_room_status': room_status,
+            'filter_room_type': room_type
+        }
+    except Exception as e:
+        print("Error in room_management view:", str(e))
+        import traceback
+        traceback.print_exc()
+        context = {'error': str(e)}
+    
+    return render(request, 'reports/room_management.html', context)
+
+
+def update_room_status(request):
+    if request.method == 'POST':
+        try:
+            room_id = request.POST.get('room_id')
+            status = request.POST.get('status')
+            
+            # Validate inputs
+            if not room_id or not status:
+                return JsonResponse({'success': False, 'error': 'Missing room_id or status'})
+            
+            # Validate status is one of the allowed values
+            allowed_statuses = ['Available', 'Occupied', 'Booked', 'Maintenance']
+            if status not in allowed_statuses:
+                return JsonResponse({'success': False, 'error': 'Invalid status'})
+            
+            # Update the room status in the database
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE room SET room_status = %s WHERE room_id = %s",
+                    [status, room_id]
+                )
+            
+            return JsonResponse({'success': True, 'message': f'Room {room_id} status updated to {status}'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request'})
