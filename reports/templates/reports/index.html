@@ -4,140 +4,305 @@
 <head>
     <title>Hotel Management System</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: white;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
         
         .home-container {
             max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
             padding: 2rem;
             text-align: center;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
         
-        .welcome-header {
-            color: #2c3e50;
-            margin-bottom: 2rem;
-        }
-        
-        .welcome-header h1 {
+        .header h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
-            color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
         
-        .welcome-header p {
+        .header p {
             font-size: 1.2rem;
             max-width: 600px;
             margin: 0 auto;
-            color: #7f8c8d;
+            opacity: 0.9;
+        }
+        
+        .navigation {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .main-content {
+            padding: 2rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-size: 2rem;
         }
         
         .buttons-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
+            margin-bottom: 3rem;
         }
         
-        .home-btn {
-            display: inline-block;
-            padding: 1.5rem 2.5rem;
-            background: #f8f9fa;
-            color: #2c3e50;
-            text-decoration: none;
+        .home-card {
+            background: white;
             border-radius: 15px;
-            margin: 1rem;
+            padding: 2rem;
+            text-align: center;
             transition: all 0.3s ease;
-            border: 1px solid #3498db;
-            min-width: 250px;
-            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
         }
         
-        .home-btn:hover {
-            background: #e3f2fd;
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(52, 152, 219, 0.2);
+        .home-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
         
-        .home-btn h2 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.8rem;
-            color: #3498db;
-        }
-        
-        .home-btn p {
-            margin: 0;
-            font-size: 1rem;
-            color: #7f8c8d;
-        }
-        
-        .btn-icon {
-            font-size: 2.5rem;
+        .card-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
-            display: block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .home-card h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .home-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            background: #e9ecef;
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
             color: #3498db;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: #2c3e50;
+            color: white;
+            margin-top: 2rem;
+            border-radius: 0 0 20px 20px;
         }
         
         @media (max-width: 768px) {
-            .home-container {
-                padding: 1rem;
-            }
-            
-            .welcome-header h1 {
+            .header h1 {
                 font-size: 2rem;
             }
             
             .buttons-container {
-                flex-direction: column;
-                gap: 1rem;
+                grid-template-columns: 1fr;
             }
             
-            .home-btn {
-                width: 100%;
-                max-width: 300px;
+            .home-container {
+                border-radius: 15px;
             }
         }
     </style>
 </head>
 <body>
     <div class="home-container">
-        <div class="welcome-header">
-            <h1>🏨 Hotel Management System</h1>
+        <div class="header">
+            <h1><i class="fas fa-hotel"></i> Hotel Management System</h1>
             <p>Welcome to your comprehensive hotel management solution. Access detailed reports and analytics to make informed business decisions.</p>
         </div>
         
-        <div class="buttons-container">
-            <a href="{% url 'reports:reports_index' %}" class="home-btn">
-                <span class="btn-icon">📋</span>
-                <h2>Traditional Reports</h2>
-                <p>View detailed textual reports and data tables</p>
+        <div class="navigation">
+            <a href="{% url 'reports:room_management' %}" class="nav-btn">
+                <i class="fas fa-bed"></i> Room Management
             </a>
+            <a href="{% url 'reports:reports_index' %}" class="nav-btn">
+                <i class="fas fa-file-alt"></i> Reports
+            </a>
+            <a href="{% url 'reports:dashboard' %}" class="nav-btn">
+                <i class="fas fa-chart-bar"></i> Analytics Dashboard
+            </a>
+        </div>
+        
+        <div class="main-content">
+            <h2 class="section-title">Hotel Management Solutions</h2>
             
-            <a href="{% url 'reports:dashboard' %}" class="home-btn">
-                <span class="btn-icon">📊</span>
-                <h2>Graphical Reports</h2>
-                <p>Visualize data with interactive charts and graphs</p>
-            </a>
+            <div class="buttons-container">
+                <div class="home-card">
+                    <div class="card-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <h2>Room Management</h2>
+                    <p>Efficiently manage hotel rooms, track availability, monitor room status, and update room conditions in real-time.</p>
+                    <a href="{% url 'reports:room_management' %}" class="btn">
+                        <i class="fas fa-arrow-right"></i> Manage Rooms
+                    </a>
+                </div>
+                
+                <div class="home-card">
+                    <div class="card-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h2>Traditional Reports</h2>
+                    <p>Access detailed textual reports on hotel operations, staff performance, revenue collection, and guest information.</p>
+                    <a href="{% url 'reports:reports_index' %}" class="btn">
+                        <i class="fas fa-arrow-right"></i> View Reports
+                    </a>
+                </div>
+                
+                <div class="home-card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h2>Analytics Dashboard</h2>
+                    <p>Visualize data with interactive charts and graphs for better business insights and decision making.</p>
+                    <a href="{% url 'reports:dashboard' %}" class="btn">
+                        <i class="fas fa-arrow-right"></i> View Analytics
+                    </a>
+                </div>
+            </div>
             
-            <a href="{% url 'reports:room_management' %}" class="home-btn">
-                <span class="btn-icon">🛏️</span>
-                <h2>Room Management</h2>
-                <p>Manage rooms, track availability and status</p>
-            </a>
+            <h2 class="section-title">Key Features</h2>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3>Real-time Updates</h3>
+                    <p>Get live data on room status and hotel operations</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h3>Advanced Filtering</h3>
+                    <p>Easily filter data by hotel, room type, or status</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Status Alerts</h3>
+                    <p>Instant notifications for room status changes</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2025 Hotel Management System. All rights reserved.</p>
         </div>
     </div>
 </body>
