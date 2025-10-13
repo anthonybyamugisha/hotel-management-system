@@ -1,40 +1,240 @@
-{% extends 'reports/base.html' %}
-
-{% block title %}Staff Performance Report{% endblock %}
-
-{% block content %}
-<div class="report-header">
-    <h1 class="report-title">👥 Staff Performance Report</h1>
-</div>
-
-{% if error %}
-    <div class="error-message">
-        <strong>Error:</strong> {{ error }}
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Staff Performance Report - Hotel Management System</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .report-container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .navigation {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .main-content {
+            padding: 2rem;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .report-section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: #2c3e50;
+            color: white;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <div class="header">
+            <h1><i class="fas fa-users"></i> Staff Performance Report</h1>
+            <p>Evaluate staff productivity and performance metrics</p>
+        </div>
+        
+        <div class="navigation">
+            <a href="{% url 'reports:index' %}" class="nav-btn">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{% url 'reports:reports_index' %}" class="nav-btn">
+                <i class="fas fa-file-alt"></i> All Reports
+            </a>
+            <a href="{% url 'reports:room_management' %}" class="nav-btn">
+                <i class="fas fa-bed"></i> Room Management
+            </a>
+            <a href="{% url 'reports:dashboard' %}" class="nav-btn">
+                <i class="fas fa-chart-bar"></i> Analytics Dashboard
+            </a>
+        </div>
+        
+        <div class="main-content">
+            {% if error %}
+                <div class="report-section">
+                    <h2 class="section-title"><i class="fas fa-exclamation-circle"></i> Error</h2>
+                    <p class="no-data">Error loading report: {{ error }}</p>
+                </div>
+            {% else %}
+                <div class="report-section">
+                    <h2 class="section-title"><i class="fas fa-chart-line"></i> Staff Performance Data</h2>
+                    {% if data %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Staff ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Hotel</th>
+                                    <th>Role</th>
+                                    <th>Contact</th>
+                                    <th>Performance Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in data %}
+                                    <tr>
+                                        <td>{{ row.staff_id }}</td>
+                                        <td>{{ row.first_name }}</td>
+                                        <td>{{ row.last_name }}</td>
+                                        <td>{{ row.hotel_name }}</td>
+                                        <td>{{ row.staff_role }}</td>
+                                        <td>{{ row.contact }}</td>
+                                        <td>{{ row.performance_score }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="no-data">No data available for this report.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2025 Hotel Management System. All rights reserved.</p>
+        </div>
     </div>
-{% elif data %}
-    <div style="overflow-x: auto;">
-        <table class="report-table">
-            <thead>
-                <tr>
-                    {% for key, value in data.0.items %}
-                        <th>{{ key }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in data %}
-                    <tr>
-                        {% for key, value in row.items %}
-                            <td>{{ value }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% else %}
-    <div class="no-data">
-        <p>No data available for this report.</p>
-    </div>
-{% endif %}
-{% endblock %}
+</body>
+</html>

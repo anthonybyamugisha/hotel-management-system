@@ -4,26 +4,92 @@
 <head>
     <title>Hotel Management Dashboard</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            box-sizing: border-box;
         }
         
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 1rem;
-            text-align: center;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
         
         .dashboard-container {
             max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
             margin: 0 auto;
-            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .navigation {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .main-content {
+            padding: 2rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-size: 2rem;
         }
         
         .chart-grid {
@@ -35,15 +101,27 @@
         
         .chart-card {
             background: white;
-            border-radius: 8px;
+            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
         }
         
         .chart-title {
             text-align: center;
             margin-bottom: 20px;
             color: #2c3e50;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .chart-wrapper {
@@ -57,82 +135,108 @@
             color: #7f8c8d;
         }
         
-        /* Button Styles */
         .btn {
             display: inline-block;
-            padding: 10px 20px;
-            background-color: #3498db;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
             color: white;
             text-decoration: none;
-            border-radius: 3px;
-            margin: 5px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
             border: none;
             cursor: pointer;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
-
+        
         .btn:hover {
-            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4);
         }
-
-        .btn-accent {
-            background-color: #2c3e50;
-        }
-
-        .btn-accent:hover {
-            background-color: #1a252f;
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: #2c3e50;
+            color: white;
+            margin-top: 2rem;
+            border-radius: 0 0 20px 20px;
         }
         
         @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
             .chart-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .dashboard-container {
+                border-radius: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>🏨 Hotel Management Dashboard</h1>
-        <p style="text-align: center; margin-top: 10px;">
-            <a href="{% url 'reports:index' %}" class="btn">🏠 Home</a>
-            <a href="{% url 'reports:reports_index' %}" class="btn">📋 View Traditional Reports</a>
-        </p>
-    </header>
-    
     <div class="dashboard-container">
-        <h2 class="chart-title">📊 Analytics Overview</h2>
+        <div class="header">
+            <h1><i class="fas fa-chart-bar"></i> Hotel Management Dashboard</h1>
+            <p>Interactive analytics and visualizations for informed business decisions</p>
+        </div>
         
-        <div class="chart-grid">
-            <!-- Revenue Trend Chart -->
-            <div class="chart-card">
-                <h3>Monthly Revenue Trend</h3>
-                <div class="chart-wrapper">
-                    <canvas id="revenueChart"></canvas>
-                </div>
-            </div>
+        <div class="navigation">
+            <a href="{% url 'reports:index' %}" class="nav-btn">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{% url 'reports:reports_index' %}" class="nav-btn">
+                <i class="fas fa-file-alt"></i> Reports
+            </a>
+            <a href="{% url 'reports:room_management' %}" class="nav-btn">
+                <i class="fas fa-bed"></i> Room Management
+            </a>
+        </div>
+        
+        <div class="main-content">
+            <h2 class="section-title">Analytics Overview</h2>
             
-            <!-- Occupancy Rate Chart -->
-            <div class="chart-card">
-                <h3>Hotel Occupancy Rates</h3>
-                <div class="chart-wrapper">
-                    <canvas id="occupancyChart"></canvas>
+            <div class="chart-grid">
+                <!-- Revenue Trend Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title"><i class="fas fa-chart-line"></i> Monthly Revenue Trend</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Occupancy Rate Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title"><i class="fas fa-percentage"></i> Hotel Occupancy Rates</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="occupancyChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Room Type Distribution -->
+                <div class="chart-card">
+                    <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Room Type Distribution</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="roomTypeChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Staff Performance -->
+                <div class="chart-card">
+                    <h3 class="chart-title"><i class="fas fa-users"></i> Staff Performance</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="staffChart"></canvas>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Room Type Distribution -->
-            <div class="chart-card">
-                <h3>Room Type Distribution</h3>
-                <div class="chart-wrapper">
-                    <canvas id="roomTypeChart"></canvas>
-                </div>
-            </div>
-            
-            <!-- Staff Performance -->
-            <div class="chart-card">
-                <h3>Staff Performance</h3>
-                <div class="chart-wrapper">
-                    <canvas id="staffChart"></canvas>
-                </div>
-            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2025 Hotel Management System. All rights reserved.</p>
         </div>
     </div>
     
@@ -327,7 +431,7 @@
                         // Show error message on page
                         document.querySelector('.chart-grid').innerHTML = 
                             '<div class="chart-card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">' +
-                            '<h3 style="color: red;">Error Loading Dashboard Data</h3>' +
+                            '<h3 style="color: red;"><i class="fas fa-exclamation-circle"></i> Error Loading Dashboard Data</h3>' +
                             '<p>Please check the server logs for details.</p>' +
                             '<p>Error: ' + data.error + '</p>' +
                             '</div>';
@@ -340,7 +444,7 @@
                     // Show error message on page
                     document.querySelector('.chart-grid').innerHTML = 
                         '<div class="chart-card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">' +
-                        '<h3 style="color: red;">Connection Error</h3>' +
+                        '<h3 style="color: red;"><i class="fas fa-exclamation-circle"></i> Connection Error</h3>' +
                         '<p>Could not connect to the server. Please try again later.</p>' +
                         '<p>Error: ' + error.message + '</p>' +
                         '</div>';
