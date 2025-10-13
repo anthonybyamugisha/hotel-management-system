@@ -38,3 +38,16 @@ LEFT JOIN invoice i ON b.booking_id = i.booking_id
 LEFT JOIN services sv ON sv.booking_id = b.booking_id
 GROUP BY h.hotel_name, DATE_FORMAT(b.check_in_date, '%Y-%m')
 ORDER BY month, total_revenue DESC;
+
+-- Combined Monthly Revenue per Hotel (Dashboard Version)
+SELECT
+    DATE_FORMAT(b.check_in_date, '%Y-%m') AS Month,
+    IFNULL(SUM(i.amount), 0) AS Total_Room_Revenue,
+    IFNULL(SUM(sv.service_price), 0) AS Total_Service_Revenue
+FROM hotel h
+JOIN room r ON h.hotel_id = r.hotel_id
+JOIN booking b ON b.room_id = r.room_id
+LEFT JOIN invoice i ON b.booking_id = i.booking_id
+LEFT JOIN services sv ON sv.booking_id = b.booking_id
+GROUP BY DATE_FORMAT(b.check_in_date, '%Y-%m')
+ORDER BY Month;

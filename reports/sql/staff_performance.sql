@@ -58,3 +58,14 @@ LEFT JOIN booking b ON b.room_id = r.room_id
 LEFT JOIN services sv ON sv.booking_id = b.booking_id
 GROUP BY s.staff_id, s.staff_role, h.hotel_name
 ORDER BY total_activity DESC, s.staff_role, CONCAT(s.first_name, ' ', s.last_name);
+
+-- Department Performance Summary (for dashboard chart)
+SELECT
+    s.staff_role AS department,
+    COUNT(DISTINCT b.booking_id) + COUNT(DISTINCT sv.service_id) AS avg_score
+FROM staff s
+LEFT JOIN room r ON s.hotel_id = r.hotel_id
+LEFT JOIN booking b ON b.room_id = r.room_id
+LEFT JOIN services sv ON sv.booking_id = b.booking_id
+GROUP BY s.staff_role
+ORDER BY avg_score DESC;
