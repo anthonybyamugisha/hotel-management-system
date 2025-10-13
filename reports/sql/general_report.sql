@@ -72,7 +72,7 @@ LEFT JOIN payment p ON p.booking_id = b.booking_id
 GROUP BY i.invoice_id, i.booking_id, g.guest_id, i.amount, i.room_status
 ORDER BY outstanding_balance DESC;
 
--- 6️⃣ Services Used by Guests
+-- Services Used by Guests
 SELECT
     sv.service_id,
     sv.booking_id,

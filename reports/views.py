@@ -204,37 +204,3 @@ def top_paying_guests(request):
         context = {'error': str(e)}
     
     return render(request, 'reports/top_paying_guests.html', context)
-
-
-def test_view(request):
-    """
-    Simple test view to diagnose deployment issues
-    """
-    try:
-        # Test database connection
-        from django.db import connection
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-            result = cursor.fetchone()
-        
-        # Test static files
-        import os
-        from django.conf import settings
-        static_dir = os.path.join(settings.BASE_DIR, 'static')
-        staticfiles_dir = settings.STATICFILES_DIRS[0] if settings.STATICFILES_DIRS else None
-        
-        context = {
-            'status': 'success',
-            'database_connection': 'Working' if result else 'Not working',
-            'static_dir_exists': os.path.exists(static_dir),
-            'staticfiles_dir': str(staticfiles_dir) if staticfiles_dir else 'Not set',
-            'debug_mode': settings.DEBUG,
-            'allowed_hosts': settings.ALLOWED_HOSTS,
-        }
-    except Exception as e:
-        context = {
-            'status': 'error',
-            'error_message': str(e),
-        }
-    
-    return render(request, 'reports/test_view.html', context)

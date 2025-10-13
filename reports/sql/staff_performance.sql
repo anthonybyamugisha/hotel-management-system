@@ -24,7 +24,7 @@ LEFT JOIN room r ON r.hotel_id = h.hotel_id
 LEFT JOIN booking b ON b.room_id = r.room_id
 WHERE s.staff_role IN ('Manager', 'Receptionist')
 GROUP BY s.staff_id, s.staff_role, h.hotel_name
-ORDER BY total_bookings_handled DESC, s.staff_name;
+ORDER BY total_bookings_handled DESC, CONCAT(s.first_name, ' ', s.last_name);
 
 -- Staff Contribution to Services
 SELECT
@@ -40,7 +40,7 @@ LEFT JOIN booking b ON b.room_id = r.room_id
 LEFT JOIN services sv ON sv.booking_id = b.booking_id
 WHERE s.staff_role IN ('Chef', 'Cleaner', 'Waiter', 'Housekeeper')
 GROUP BY s.staff_id, s.staff_role, h.hotel_name
-ORDER BY total_services_handled DESC, s.staff_name;
+ORDER BY total_services_handled DESC, CONCAT(s.first_name, ' ', s.last_name);
 
 -- Combined Staff Performance Summary
 SELECT
@@ -57,4 +57,4 @@ LEFT JOIN room r ON r.hotel_id = h.hotel_id
 LEFT JOIN booking b ON b.room_id = r.room_id
 LEFT JOIN services sv ON sv.booking_id = b.booking_id
 GROUP BY s.staff_id, s.staff_role, h.hotel_name
-ORDER BY total_activity DESC, s.staff_role, s.staff_name;
+ORDER BY total_activity DESC, s.staff_role, CONCAT(s.first_name, ' ', s.last_name);

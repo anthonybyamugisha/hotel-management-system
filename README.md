@@ -26,54 +26,6 @@ A Django-based hotel management system with reporting and dashboard capabilities
    python manage.py runserver
    ```
 
-## Deployment to Render
-
-### Automatic Deployment
-Render will automatically:
-1. Install dependencies from `requirements.txt`
-2. Run the build command: `./setup.sh`
-3. Start the application with: `gunicorn hotel_management.wsgi:application`
-
-### Manual Deployment Steps
-1. Push your code to GitHub
-2. Connect your repository to Render
-3. Configure the service using `render.yaml`
-4. Set environment variables in Render dashboard:
-   - `SECRET_KEY` (auto-generated)
-   - `DEBUG=False`
-   - `ALLOWED_HOSTS` (comma-separated list including your Render domain)
-
-### Troubleshooting Deployment Issues
-
-If your application isn't working after deployment, check:
-
-1. **Render Logs**: Check the build and runtime logs for error messages
-2. **Environment Variables**: Ensure all required variables are set
-3. **Database Connection**: Verify the database is properly linked
-4. **Static Files**: Make sure `collectstatic` runs during build
-
-### Diagnostic URLs
-- Test deployment: `/reports/test/`
-- Main dashboard: `/reports/dashboard/`
-- Reports index: `/reports/reports/`
-
-### Common Issues and Solutions
-
-#### Database Connection Errors
-- Ensure your database service is running
-- Check that `DATABASE_URL` is correctly set
-- Verify database credentials and permissions
-
-#### Static Files Not Loading
-- Confirm `collectstatic` runs during build
-- Check `STATIC_ROOT` and `STATIC_URL` settings
-- Verify WhiteNoise is properly configured
-
-#### Application Not Starting
-- Check the start command: `gunicorn hotel_management.wsgi:application`
-- Ensure all dependencies are in `requirements.txt`
-- Verify the WSGI application path is correct
-
 ## Project Structure
 ```
 hotel_management/
@@ -90,31 +42,39 @@ hotel_management/
 │   ├── css/
 │   ├── js/
 │   └── images/
-├── manage.py                # Django management script
-├── requirements.txt         # Python dependencies
-├── Procfile                 # Render start command
-├── render.yaml              # Render service configuration
-└── setup.sh                 # Build script
+└── manage.py                # Django management script
 ```
 
 ## Development Commands
 
 ### Windows
 ```bash
-# Setup (first time)
-setup.bat
+# Activate virtual environment
+venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run migrations
+python manage.py migrate
 
 # Run development server
-run_dev.bat
+python manage.py runserver
 ```
 
 ### Linux/Mac
 ```bash
-# Setup (first time)
-make setup
+# Activate virtual environment
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run migrations
+python manage.py migrate
 
 # Run development server
-make run
+python manage.py runserver
 ```
 
 ## Reports Available
@@ -132,10 +92,3 @@ make run
 2. Hotel Occupancy Rates
 3. Room Type Distribution
 4. Staff Performance
-
-## Support
-
-For deployment issues, check:
-1. Render logs for specific error messages
-2. [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) for detailed troubleshooting steps
-3. Render documentation: https://render.com/docs
