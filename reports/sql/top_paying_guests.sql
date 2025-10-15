@@ -20,10 +20,10 @@ LIMIT 10;  -- Shows top 10 paying guests
 SELECT
     g.guest_id,
     CONCAT(g.first_name, ' ', g.last_name) AS guest_name,
-    SUM(IFNULL(p.amount, 0)) AS total_paid
+    SUM(IFNULL(p.amount, 0)) AS total_amount_paid
 FROM guest g
 JOIN booking b ON g.guest_id = b.guest_id
 LEFT JOIN payment p ON b.booking_id = p.booking_id
 GROUP BY g.guest_id, g.first_name, g.last_name
-ORDER BY total_paid DESC
+ORDER BY total_amount_paid DESC
 LIMIT 10;

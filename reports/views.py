@@ -33,7 +33,16 @@ def execute_sql(file_name):
         # Use the last query that starts with SELECT (typically the main report query)
         select_queries = [q for q in queries if q.upper().startswith('SELECT')]
         if select_queries:
-            query = select_queries[-1]
+            # For report files, we want to execute the most comprehensive query
+            # which is typically the one with the most columns or the one that combines data
+            # For now, we'll use a heuristic: look for queries with "Combined" or "Total" in them
+            combined_queries = [q for q in select_queries if any(keyword in q.upper() for keyword in ['COMBINED', 'TOTAL', 'SUMMARY'])]
+            if combined_queries:
+                query = combined_queries[-1]  # Use the last combined query
+            else:
+                # If no combined queries, look for queries with more columns
+                # For now, we'll just use the last SELECT query as before
+                query = select_queries[-1]
         else:
             # If no SELECT queries, use the last query
             query = queries[-1]

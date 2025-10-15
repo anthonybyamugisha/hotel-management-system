@@ -1,4 +1,4 @@
--- Hotel Occupancy Rates (Dashboard Version)
+-- Hotel Occupancy Rates
 SELECT
     h.hotel_name AS Hotel_Name,
     ROUND(

@@ -41,15 +41,12 @@ ORDER BY total_outstanding DESC;
 SELECT
     g.guest_id,
     CONCAT(g.first_name, ' ', g.last_name) AS guest_name,
-    SUM(i.amount - IFNULL(paid.total_paid, 0)) AS total_outstanding_balance
+    SUM(IFNULL(p.amount, 0)) AS total_paid,
+    SUM(i.amount - IFNULL(p.amount, 0)) AS total_outstanding
 FROM guest g
 JOIN booking b ON g.guest_id = b.guest_id
 JOIN invoice i ON b.booking_id = i.booking_id
-LEFT JOIN (
-    SELECT booking_id, SUM(amount) AS total_paid
-    FROM payment
-    GROUP BY booking_id
-) AS paid ON i.booking_id = paid.booking_id
-WHERE (i.amount - IFNULL(paid.total_paid, 0)) > 0
-GROUP BY g.guest_id
-ORDER BY total_outstanding_balance DESC;
+LEFT JOIN payment p ON b.booking_id = p.booking_id
+WHERE (i.amount - IFNULL(p.amount, 0)) > 0
+GROUP BY g.guest_id, g.first_name, g.last_name
+ORDER BY total_outstanding DESC;

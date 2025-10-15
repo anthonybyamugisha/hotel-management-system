@@ -95,16 +95,24 @@
             border: 1px solid #e9ecef;
         }
         
+        /* Make table horizontally scrollable */
+        .table-container {
+            overflow-x: auto;
+            width: 100%;
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1rem;
+            min-width: 800px; /* Ensure table is wide enough to show all columns */
         }
         
         th, td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #e9ecef;
+            white-space: nowrap; /* Prevent text wrapping to keep consistent column widths */
         }
         
         th {
@@ -119,26 +127,6 @@
         
         tr:hover {
             background-color: #e3f2fd;
-        }
-        
-        .status-available {
-            color: green;
-            font-weight: bold;
-        }
-        
-        .status-occupied {
-            color: red;
-            font-weight: bold;
-        }
-        
-        .status-booked {
-            color: orange;
-            font-weight: bold;
-        }
-        
-        .status-maintenance {
-            color: gray;
-            font-weight: bold;
         }
         
         .no-data {
@@ -210,15 +198,13 @@
         </div>
         
         <div class="main-content">
-            {% if error %}
-                <div class="report-section">
-                    <h2 class="section-title"><i class="fas fa-exclamation-circle"></i> Error</h2>
+            <div class="report-section">
+                <h2 class="section-title"><i class="fas fa-chart-bar"></i> Hotel Room Occupancy</h2>
+                
+                {% if error %}
                     <p class="no-data">Error loading report: {{ error }}</p>
-                </div>
-            {% else %}
-                <div class="report-section">
-                    <h2 class="section-title"><i class="fas fa-chart-bar"></i> Room Status per Hotel</h2>
-                    {% if data %}
+                {% elif data %}
+                    <div class="table-container">
                         <table>
                             <thead>
                                 <tr>
@@ -226,10 +212,8 @@
                                     <th>Hotel Name</th>
                                     <th>Room Type</th>
                                     <th>Total Rooms</th>
-                                    <th>Available</th>
-                                    <th>Booked</th>
-                                    <th>Occupied</th>
-                                    <th>Maintenance</th>
+                                    <th>Occupied Rooms</th>
+                                    <th>Occupancy Rate (%)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -239,19 +223,17 @@
                                         <td>{{ row.hotel_name }}</td>
                                         <td>{{ row.room_type }}</td>
                                         <td>{{ row.total_rooms }}</td>
-                                        <td class="status-available">{{ row.available_rooms }}</td>
-                                        <td class="status-booked">{{ row.booked_rooms }}</td>
-                                        <td class="status-occupied">{{ row.occupied_rooms }}</td>
-                                        <td class="status-maintenance">{{ row.maintenance_rooms }}</td>
+                                        <td>{{ row.occupied_rooms }}</td>
+                                        <td>{{ row.occupancy_rate_percent }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
-                    {% else %}
-                        <p class="no-data">No data available for this report.</p>
-                    {% endif %}
-                </div>
-            {% endif %}
+                    </div>
+                {% else %}
+                    <p class="no-data">No data available for this report.</p>
+                {% endif %}
+            </div>
         </div>
         
         <div class="footer">
