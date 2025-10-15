@@ -50,6 +50,7 @@ hotel_management/
 │   └── wsgi.py              # WSGI entry point
 ├── reports/                  # Reports app
 │   ├── sql/                 # SQL query files for reports
+│   │   └── README.md        # SQL files documentation
 │   ├── templates/           # HTML templates
 │   ├── views.py             # View functions
 │   └── urls.py              # App URL routing
@@ -147,6 +148,10 @@ The system uses a MySQL database with the following tables:
 - **invoice** - Invoice information (ID, booking ID, guest ID, amount, status)
 - **services** - Service information (ID, name, price, booking ID)
 
+## SQL Files Documentation
+
+Each SQL file in the `reports/sql/` directory serves a specific purpose in the application. For detailed information about what each SQL file implements, see [reports/sql/README.md](reports/sql/README.md).
+
 ## Accessing the Application
 
 After starting the development server, access the application at:
@@ -155,6 +160,27 @@ After starting the development server, access the application at:
 - **Room Management**: http://127.0.0.1:8000/reports/room-management/
 - **Analytics Dashboard**: http://127.0.0.1:8000/reports/dashboard/
 
+## Recent Updates
+
+### Codebase Improvements
+- Optimized SQL queries for better performance
+- Removed unused test and debug files to reduce clutter
+- Improved error handling in report generation
+- Enhanced data visualization in dashboard charts
+- Streamlined template structure for consistent styling
+
+### Report Enhancements
+- Fixed data fetching issues in multiple reports
+- Improved table layouts with horizontal scrolling for wide data sets
+- Updated column naming consistency across reports
+- Enhanced visual styling to match modern UI standards
+- Added responsive design for better mobile experience
+
+### Database Optimization
+- Cleaned up unused SQL files while preserving essential schema and data population scripts
+- Verified all report queries are functioning correctly
+- Improved query efficiency for dashboard data generation
+
 ## Troubleshooting
 
 - Ensure MySQL is running and accessible
@@ -162,3 +188,4 @@ After starting the development server, access the application at:
 - Check that all dependencies are installed (`pip install -r requirements.txt`)
 - For database connection issues, try recreating the database and running migrations
 - If charts are not displaying data, check the browser console for JavaScript errors
+- For report data issues, verify the database has been populated with sample data
