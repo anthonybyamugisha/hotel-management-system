@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.db import connection
 from django.core.exceptions import ImproperlyConfigured
+from django.contrib import messages
 import os
 import json
 from collections import defaultdict
+from .forms import GuestForm, BookingForm, RoomForm, StaffForm, PaymentForm
 
 # Helper function to read and execute SQL files
 def execute_sql(file_name):
@@ -306,6 +308,131 @@ def test_database_connection(request):
         }
     
     return JsonResponse(context)
+
+
+def forms_index(request):
+    return render(request, 'reports/forms_index.html')
+
+
+def add_guest(request):
+    if request.method == 'POST':
+        form = GuestForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            contact = form.cleaned_data['contact']
+            gender = form.cleaned_data['gender']
+            
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO guest (first_name, last_name, contact, gender) VALUES (%s, %s, %s, %s)",
+                    [first_name, last_name, contact, gender]
+                )
+            
+            messages.success(request, 'Guest added successfully!')
+            return redirect('reports:add_guest')
+    else:
+        form = GuestForm()
+    
+    return render(request, 'reports/add_guest.html', {'form': form})
+
+
+def add_booking(request):
+    if request.method == 'POST':
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            guest_id = form.cleaned_data['guest_id']
+            room_id = form.cleaned_data['room_id']
+            check_in_date = form.cleaned_data['check_in_date']
+            check_out_date = form.cleaned_data['check_out_date']
+            booking_status = form.cleaned_data['booking_status']
+            
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO booking (guest_id, room_id, check_in_date, check_out_date, booking_status) VALUES (%s, %s, %s, %s, %s)",
+                    [guest_id, room_id, check_in_date, check_out_date, booking_status]
+                )
+                # Update room status to 'Booked'
+                cursor.execute(
+                    "UPDATE room SET room_status = 'Booked' WHERE room_id = %s",
+                    [room_id]
+                )
+            
+            messages.success(request, 'Booking added successfully!')
+            return redirect('reports:add_booking')
+    else:
+        form = BookingForm()
+    
+    return render(request, 'reports/add_booking.html', {'form': form})
+
+
+def add_room(request):
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            hotel_id = form.cleaned_data['hotel_id']
+            room_type = form.cleaned_data['room_type']
+            room_status = form.cleaned_data['room_status']
+            
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO room (hotel_id, room_type, room_status) VALUES (%s, %s, %s)",
+                    [hotel_id, room_type, room_status]
+                )
+            
+            messages.success(request, 'Room added successfully!')
+            return redirect('reports:add_room')
+    else:
+        form = RoomForm()
+    
+    return render(request, 'reports/add_room.html', {'form': form})
+
+
+def add_staff(request):
+    if request.method == 'POST':
+        form = StaffForm(request.POST)
+        if form.is_valid():
+            hotel_id = form.cleaned_data['hotel_id']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            contact = form.cleaned_data['contact']
+            staff_role = form.cleaned_data['staff_role']
+            
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO staff (hotel_id, first_name, last_name, contact, staff_role) VALUES (%s, %s, %s, %s, %s)",
+                    [hotel_id, first_name, last_name, contact, staff_role]
+                )
+            
+            messages.success(request, 'Staff member added successfully!')
+            return redirect('reports:add_staff')
+    else:
+        form = StaffForm()
+    
+    return render(request, 'reports/add_staff.html', {'form': form})
+
+
+def add_payment(request):
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            booking_id = form.cleaned_data['booking_id']
+            payment_date = form.cleaned_data['payment_date']
+            amount = form.cleaned_data['amount']
+            
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO payment (booking_id, payment_date, amount) VALUES (%s, %s, %s)",
+                    [booking_id, payment_date, amount]
+                )
+            
+            messages.success(request, 'Payment recorded successfully!')
+            return redirect('reports:add_payment')
+    else:
+        form = PaymentForm()
+    
+    return render(request, 'reports/add_payment.html', {'form': form})
+
 
 def hotels_and_staff(request):
     try:

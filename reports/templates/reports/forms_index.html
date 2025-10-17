@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Forms - Hotel Management System</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .navigation {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .main-content {
+            padding: 2rem;
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card i {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+        
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: #2c3e50;
+            color: white;
+            margin-top: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-file-alt"></i> Management Forms</h1>
+            <p>Add and manage hotel data with our easy-to-use forms</p>
+        </div>
+        
+        <div class="navigation">
+            <a href="{% url 'reports:index' %}" class="nav-btn">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{% url 'reports:reports_index' %}" class="nav-btn">
+                <i class="fas fa-file-alt"></i> Reports
+            </a>
+            <a href="{% url 'reports:dashboard' %}" class="nav-btn">
+                <i class="fas fa-chart-bar"></i> Analytics Dashboard
+            </a>
+            <a href="{% url 'reports:room_management' %}" class="nav-btn">
+                <i class="fas fa-bed"></i> Room Management
+            </a>
+        </div>
+        
+        <div class="main-content">
+            <div class="cards-container">
+                <div class="card">
+                    <i class="fas fa-user-plus"></i>
+                    <h3>Add Guest</h3>
+                    <p>Add new guests to the hotel management system</p>
+                    <a href="{% url 'reports:add_guest' %}" class="btn">Add Guest</a>
+                </div>
+                
+                <div class="card">
+                    <i class="fas fa-calendar-plus"></i>
+                    <h3>Add Booking</h3>
+                    <p>Create new bookings for guests</p>
+                    <a href="{% url 'reports:add_booking' %}" class="btn">Add Booking</a>
+                </div>
+                
+                <div class="card">
+                    <i class="fas fa-door-open"></i>
+                    <h3>Add Room</h3>
+                    <p>Add new rooms to hotels</p>
+                    <a href="{% url 'reports:add_room' %}" class="btn">Add Room</a>
+                </div>
+                
+                <div class="card">
+                    <i class="fas fa-user-tie"></i>
+                    <h3>Add Staff</h3>
+                    <p>Add new staff members to hotels</p>
+                    <a href="{% url 'reports:add_staff' %}" class="btn">Add Staff</a>
+                </div>
+                
+                <div class="card">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>Record Payment</h3>
+                    <p>Record payments for bookings</p>
+                    <a href="{% url 'reports:add_payment' %}" class="btn">Record Payment</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2025 Hotel Management System. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

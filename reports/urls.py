@@ -17,4 +17,12 @@ urlpatterns = [
     path('top-paying-guests/', views.top_paying_guests, name='top_paying_guests'),
     path('room-management/', views.room_management, name='room_management'),
     path('update-room-status/', views.update_room_status, name='update_room_status'),
+    # Forms index
+    path('forms/', views.forms_index, name='forms_index'),
+    # Form URLs
+    path('add-guest/', views.add_guest, name='add_guest'),
+    path('add-booking/', views.add_booking, name='add_booking'),
+    path('add-room/', views.add_room, name='add_room'),
+    path('add-staff/', views.add_staff, name='add_staff'),
+    path('add-payment/', views.add_payment, name='add_payment'),
 ]
